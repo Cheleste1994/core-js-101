@@ -575,8 +575,11 @@ function selectMany(arr, childrenSelector) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  let newArr = [...arr];
+  // eslint-disable-next-line no-return-assign
+  indexes.map((x) => newArr = newArr[x]);
+  return newArr;
 }
 
 
@@ -598,10 +601,19 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  const newArr = [];
+  const { length } = arr;
+  if (arr.length % 2 === 0) {
+    newArr.push(arr.slice(length / 2));
+    newArr.push(arr.slice(0, length / 2));
+    return newArr.flat();
+  }
+  newArr.push(arr.slice(Math.ceil(length / 2)));
+  newArr.push(arr.slice(Math.floor(length / 2), Math.ceil(length / 2)));
+  newArr.push(arr.slice(0, Math.floor(length / 2)));
+  return newArr.flat();
 }
-
 
 module.exports = {
   findElement,
