@@ -63,8 +63,14 @@ function getFactorial(n) {
  *   5,10  =>  45 ( = 5+6+7+8+9+10 )
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
-function getSumBetweenNumbers(/* n1, n2 */) {
-  throw new Error('Not implemented');
+function getSumBetweenNumbers(n1, n2) {
+  let sum = n1;
+  let i = n1;
+  while (i < n2) {
+    i += 1;
+    sum += i;
+  }
+  return sum;
 }
 
 
@@ -83,8 +89,11 @@ function getSumBetweenNumbers(/* n1, n2 */) {
  *   10,1,1   =>  false
  *   10,10,10 =>  true
  */
-function isTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isTriangle(a, b, c) {
+  const a1 = a === Math.sqrt((b ** 2) + (c ** 2));
+  const b1 = b === Math.sqrt((a ** 2) + (c ** 2));
+  const c1 = c === Math.sqrt((b ** 2) + (a ** 2));
+  return a1 || b1 || c1 || (a === b && b === c);
 }
 
 
@@ -120,8 +129,16 @@ function isTriangle(/* a, b, c */) {
  *   { top:20, left:20, width: 20, height: 20 }    =>  false
  *
  */
-function doRectanglesOverlap(/* rect1, rect2 */) {
-  throw new Error('Not implemented');
+function doRectanglesOverlap(rect1, rect2) {
+  const w1 = rect1.left + rect1.width;
+  const w2 = rect2.left + rect2.width;
+  const h1 = rect1.top + rect1.height;
+  const h2 = rect2.top + rect2.height;
+
+  const w = rect1.left < w2 && w1 > rect2.left;
+  const h = rect1.top < h2 && h1 > rect2.top;
+
+  return w && h;
 }
 
 
