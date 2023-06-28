@@ -119,36 +119,100 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  arr: [],
+  selectors: [],
+  order: {
+    element: 1,
+    id: 2,
+    class: 3,
+    attr: 4,
+    pseudoClass: 5,
+    pseudoElement: 6,
+  },
+  prevOrder: 0,
+
+  element(value) {
+    if (this.order.element < this.prevOrder) {
+      this.arr.push(this.selectors);
+      this.selectors = [];
+      this.prevOrder = 0;
+    }
+    this.prevOrder = this.order.element;
+    this.selectors.push(value);
+    return this;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    if (this.order.id < this.prevOrder) {
+      this.arr.push(this.selectors);
+      this.selectors = [];
+      this.prevOrder = 0;
+    }
+    this.prevOrder = this.order.id;
+    this.selectors.push(`#${value}`);
+    return this;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    if (this.order.class < this.prevOrder) {
+      this.arr.push(this.selectors);
+      this.selectors = [];
+      this.prevOrder = 0;
+    }
+    this.prevOrder = this.order.class;
+    this.selectors.push(`.${value}`);
+    return this;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    if (this.order.attr < this.prevOrder) {
+      this.arr.push(this.selectors);
+      this.selectors = [];
+      this.prevOrder = 0;
+    }
+    this.prevOrder = this.order.attr;
+    this.selectors.push(`[${value}]`);
+    return this;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    if (this.order.pseudoClass < this.prevOrder) {
+      this.arr.push(this.selectors);
+      this.selectors = [];
+      this.prevOrder = 0;
+    }
+    this.prevOrder = this.order.pseudoClass;
+    this.selectors.push(`:${value}`);
+    return this;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    if (this.order.pseudoElement < this.prevOrder) {
+      this.arr.push(this.selectors);
+      this.selectors = [];
+      this.prevOrder = 0;
+    }
+    this.prevOrder = this.order.pseudoElement;
+    this.selectors.push(`::${value}`);
+    return this;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator) {
+    const combinedSelector = `${this.arr.filter(Boolean).flat().join('')} ${combinator} ${this.selectors.join('')}`;
+    this.arr = [];
+    this.selectors = [];
+    this.selectors.push(combinedSelector);
+    return this;
+  },
+
+  stringify() {
+    const str = this.selectors.join('');
+    this.selectors = [];
+    return str;
   },
 };
-
 
 module.exports = {
   Rectangle,
