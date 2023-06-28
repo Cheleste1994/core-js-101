@@ -25,16 +25,6 @@ function Rectangle(width, height) {
   this.getArea = () => this.width * this.height;
 }
 
-// class Rectangle {
-//   constructor(width, height) {
-//     this.width = width;
-//     this.height = height;
-//   }
-
-//   getArea() {
-//     return this.width * this.height;
-//   }
-// }
 
 /**
  * Returns the JSON representation of specified object
