@@ -121,92 +121,71 @@ function fromJSON(proto, json) {
 
 
 const cssSelectorBuilder = {
-  arr: [],
-  selectors: [],
-  order: {
-    element: 1,
-    id: 2,
-    class: 3,
-    attr: 4,
-    pseudoClass: 5,
-    pseudoElement: 6,
-  },
-  prevOrder: 0,
+  selectors: '',
+  order: 0,
 
   element(value) {
-    if (this.order.element < this.prevOrder) {
-      this.arr.push(this.selectors);
-      this.selectors = [];
-      this.prevOrder = 0;
-    }
-    this.prevOrder = this.order.element;
-    this.selectors.push(value);
-    return this;
+    this.checkError(1);
+    return this.addBuild(1, value, '');
   },
 
   id(value) {
-    if (this.order.id < this.prevOrder) {
-      this.arr.push(this.selectors);
-      this.selectors = [];
-      this.prevOrder = 0;
-    }
-    this.prevOrder = this.order.id;
-    this.selectors.push(`#${value}`);
-    return this;
+    this.checkError(2);
+    return this.addBuild(2, value, '#');
   },
 
   class(value) {
-    if (this.order.class < this.prevOrder) {
-      this.arr.push(this.selectors);
-      this.selectors = [];
-      this.prevOrder = 0;
-    }
-    this.prevOrder = this.order.class;
-    this.selectors.push(`.${value}`);
-    return this;
+    this.checkError(3);
+    return this.addBuild(3, value, '.');
   },
 
   attr(value) {
-    if (this.order.attr < this.prevOrder) {
-      this.arr.push(this.selectors);
-      this.selectors = [];
-      this.prevOrder = 0;
-    }
-    this.prevOrder = this.order.attr;
-    this.selectors.push(`[${value}]`);
-    return this;
+    this.checkError(4);
+    return this.addBuild(4, value, '[]');
   },
 
   pseudoClass(value) {
-    if (this.order.pseudoClass < this.prevOrder) {
-      this.arr.push(this.selectors);
-      this.selectors = [];
-      this.prevOrder = 0;
-    }
-    this.prevOrder = this.order.pseudoClass;
-    this.selectors.push(`:${value}`);
-    return this;
+    this.checkError(5);
+    return this.addBuild(5, value, ':');
   },
 
   pseudoElement(value) {
-    if (this.order.pseudoElement < this.prevOrder) {
-      this.arr.push(this.selectors);
-      this.selectors = [];
-      this.prevOrder = 0;
-    }
-    this.prevOrder = this.order.pseudoElement;
-    this.selectors.push(`::${value}`);
-    return this;
+    this.checkError(6);
+    return this.addBuild(6, value, '::');
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const newInstance = Object.create(cssSelectorBuilder);
+    newInstance.selectors = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    return newInstance;
   },
 
   stringify() {
-    const str = this.selectors.join('');
-    this.selectors = [];
-    return str;
+    return this.selectors;
+  },
+
+  checkError(order) {
+    if (order < this.order) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element',
+      );
+    }
+    if (this.order === order && (order === 1 || order === 2 || order === 6)) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector',
+      );
+    }
+  },
+
+  addBuild(order, value, selectorType) {
+    const newInstance = Object.create(cssSelectorBuilder);
+    newInstance.order = order;
+    if (order !== 4) {
+      newInstance.selectors = `${this.selectors}${selectorType}${value}`;
+    } else {
+      newInstance.selectors = `${this.selectors}${selectorType[0]}${value}${selectorType[1]}`;
+    }
+    return newInstance;
   },
 };
 
