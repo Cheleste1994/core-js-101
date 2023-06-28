@@ -199,12 +199,8 @@ const cssSelectorBuilder = {
     return this;
   },
 
-  combine(selector1, combinator) {
-    const combinedSelector = `${this.arr.filter(Boolean).flat().join('')} ${combinator} ${this.selectors.join('')}`;
-    this.arr = [];
-    this.selectors = [];
-    this.selectors.push(combinedSelector);
-    return this;
+  combine(/* selector1, combinator, selector2 */) {
+    throw new Error('Not implemented');
   },
 
   stringify() {
